@@ -1,1 +1,6 @@
 # Reproduction-Schema-App
+This is a standalone app based on the [desmos model](https://www.desmos.com/calculator/wyndlbrtvj). My goals for it are as follows:
+- It should have sliders for the initial value output of the departments ($y_1$ and $y_2$), the rate of exploitation ($e_x$), the rate of capitalist reinvestment ($a$), and the compositions of capital for the two departments ($k_1$ and $k_2$). It should be also possible to manually import values, identically to how it works in desmos, and all graphs and information should update as these values are changed.
+- All graphs from the desmos app should behave identically in this. The graph should be draggable, zoomable, and with the capability of displaying hover information when mousing over curves (see below).
+- The main feature I am interesting in adding which Desmos lacks is floating windows which allow the user to mouse over things and have information provided in order to guide them through using the app and turn it into an interactive learning tool. Any widget or entity should have the capability of being 'hoverable', in which case a box should appear displaying text (including possibly latex).
+- Will add more here as I think of things and as the project develops. 
