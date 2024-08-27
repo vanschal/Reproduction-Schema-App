@@ -4,13 +4,17 @@ from dash.dependencies import Input, Output, State
 import plotly.graph_objs as go
 import numpy as np
 
-
+#23/8/2024
 #I have made some progress since the last update, fixed the dragging, pinching, zooming of the graph
 #Added the x axis line and the input boxes of each variable to enter the value manually
 #Reset view button and the balanced growth button was also added
 #In the next draft I aim to link the input boxes and the slider values so that they correspond and match up with one another
 #The reset view button and balanced growth button will also be made functional
 
+
+#I have the balanced growth button working now
+#need some clarification on the reset view button and what it has to achieve exactly
+#some help linking the input boxes and the slider values would also help greatly
 
 app = dash.Dash(__name__)
 
@@ -135,7 +139,7 @@ app.layout = html.Div([
 
       
 
-      #Graph details, most importantly the bar at the top right
+    #Graph details, most importantly the bar at the top right
     #What is shown on the bar
     #How you can move around on the graph, what is the user able to do and what action does what
         html.Div(id='graph-container', children=[
@@ -158,17 +162,28 @@ app.layout = html.Div([
 #  When a value changes the callback will be activated to update what the graph looks like according to the new values
 @app.callback(
     Output('graph', 'figure'),
-    Input('slider-e', 'value'),
+    Output('balanced-growth-button', 'n_clicks'), #giving it an output so that it can be reset to 0 as described below
+    # Output('reset-view-button','n_clicks'),
+
+    #below are the values used to get the initial graph by feeding them into the equations
+    Input('slider-e','value'),
     Input('slider-k1', 'value'),
     Input('slider-k2', 'value'),
     Input('slider-a', 'value'),
     Input('slider-y1i', 'value'),
-    Input('slider-y2i', 'value')
+    Input('slider-y2i', 'value'),
+
+    Input('balanced-growth-button', 'n_clicks'), #tracking if balanced growth path button has been clicked
+    # Input('reset-view-button', 'n_clicks') #tracking if rest view button has been clicked
 )
 
+
 # Update graph function, basically copied off of the tkinter version
-def update_graph(e, k_1, k_2, a, y_1i, y_2i):
+def update_graph(e, k_1, k_2, a, y_1i, y_2i, clicks_bg):
     # Calculate variables based on slider values
+
+    # if clicks_rv > 0:
+
     c_1 = k_1 / (1 + e + k_1)
     v_1 = (1 - c_1) / (1 + e)
     s_1 = e * v_1
@@ -197,6 +212,15 @@ def update_graph(e, k_1, k_2, a, y_1i, y_2i):
     r_l = (m_22 * y_1i - m_21 * y_2i) / (m_11 * m_22 - m_12 * m_21)
 
     t_range = np.linspace(-3, 14, 1000)
+
+
+    #if the user clicks the balanced growth button, they would set both of these values equal to one another achieving the
+    #desired balanced growth, clicks is then set back to 0 to make the change impermanent and the cycle can repeat
+
+    if clicks_bg > 0:
+        k_1,k_2 = 2.5,2.5
+        clicks_bg = 0
+
     exp_1 = (1 / mu_1) ** t_range
     if k_2 > k_1:
         exp_2 = (-1 / mu_2) ** t_range
@@ -235,9 +259,7 @@ def update_graph(e, k_1, k_2, a, y_1i, y_2i):
     zerolinewidth=2,
     zerolinecolor='black'
 )
-
-
-    return fig
+    return fig, clicks_bg
 
 
 if __name__ == '__main__':
